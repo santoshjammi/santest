@@ -1,0 +1,27 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- build/san-dev
+
+pool:
+  vmImage: ubnuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+- script: |
+    sudo apt-get update
+    sudo apt-get install -y wget apt-transport-https software-properties-common
+    wget -q https://packages.microsoft.com/config/ubuntu/$VERSION_ID/packages-microsoft-prod.deb
+    sudo dpkg -i packages-microsoft-prod.deb
+    rm packages-microsoft-prod.deb
+    sudo apt-get update
+    sudo apt-get install -y powershell
+- pwsh: $(Build.SourcesDirectory)\PoshScripts\test.ps1 $(Build.SourceBranch)
+# - script: |
+#     echo Add other tasks to build, test, and deploy your project.
+#     powershell.exe 
+#   displayName: 'Run a multi-line script'
